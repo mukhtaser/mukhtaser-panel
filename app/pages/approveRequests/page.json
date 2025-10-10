@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "type": "table",
+  "title": "approve_requests",
+  "hideInSidebar": false,
+  "config": {
+    "dataSource": "postgres_db_342m2d",
+    "fetchStrategy": "databaseTable",
+    "table": "approve_request"
+  }
+}

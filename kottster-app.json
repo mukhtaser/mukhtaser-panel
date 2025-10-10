@@ -1,0 +1,31 @@
+{
+  "id": "a6298401-bd05-4594-b08a-6f6df2db9372",
+  "meta": {
+    "name": "Admin Panel",
+    "icon": "https://web.kottster.app/icon.png"
+  },
+  "menuPageOrder": [
+    "users",
+    "organizations",
+    "features",
+    "planFeatures",
+    "plans",
+    "payments",
+    "subscriptions",
+    "addresses",
+    "attachments",
+    "attachments",
+    "taxAccounts",
+    "organizationSupports",
+    "mukhtaserCodes",
+    "approveRequests",
+    "joinRequests",
+    "employees",
+    "socialAccouts",
+    "branches",
+    "notifications",
+    "bankAccounts",
+    "searchUsages",
+    "otps"
+  ]
+}

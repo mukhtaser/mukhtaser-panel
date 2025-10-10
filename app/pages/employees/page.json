@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "type": "table",
+  "title": "employees",
+  "hideInSidebar": false,
+  "config": {
+    "dataSource": "postgres_db_342m2d",
+    "fetchStrategy": "databaseTable",
+    "table": "employee_contract"
+  }
+}
