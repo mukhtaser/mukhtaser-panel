@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "type": "table",
+  "title": "teest43",
+  "hideInSidebar": false,
+  "config": {
+    "fetchStrategy": "customFetch"
+  }
+}

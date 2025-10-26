@@ -14,8 +14,8 @@ const API_TOKEN = getEnvOrThrow('API_TOKEN');
  */
 export const app = createApp({
   schema,
-  secretKey: SECRET_KEY, // 'RwBKWOpzYD2sHdAwdOqdvXtjZ8hHtYKP',
-  kottsterApiToken: API_TOKEN , // 'nL1ZuNYFfbTYsUFbkLQwwfyVAfZiseS6',
+  secretKey: SECRET_KEY, 
+  kottsterApiToken: API_TOKEN , 
 
   /*
    * The identity provider configuration.
