@@ -95,7 +95,7 @@ const ApprovalRequestsPage = () => {
     if (!selectedRequest) return;
 
     try {
-      const data = await apiCall(`/api/approval-requests/${selectedRequest.id}`, {
+      const data = await apiCall(`http://localhost:3000/api/v1/approve-requests/${selectedRequest.id}`, {
         method: 'PUT',
         body: JSON.stringify({
           status: formData.status,
@@ -139,14 +139,13 @@ const ApprovalRequestsPage = () => {
 
   useEffect(() => {
     fetchApprovalRequests();
-    console.log(requests, 'REQUESTS')
   }, []);
 
   // Status badge component
   const StatusBadge = ({ status }) => {
     const getStatusColor = () => {
       switch (status) {
-        case 'APPROVED': return '#52c41a';
+        case 'ACCEPTED': return '#52c41a';
         case 'REJECTED': return '#ff4d4f';
         case 'PENDING': return '#faad14';
         default: return '#d9d9d9';
@@ -310,8 +309,8 @@ const ApprovalRequestsPage = () => {
                     <div className="info-item">
                       <label>Address Proof:</label>
                       <span>
-                        {selectedOrg.addressUrl ? (
-                          <a href={selectedOrg.addressUrl} target="_blank" rel="noopener noreferrer">
+                        {selectedOrg.nationalAddressUrl ? (
+                          <a href={selectedOrg.nationalAddressUrl} target="_blank" rel="noopener noreferrer">
                             View Document
                           </a>
                         ) : 'Not provided'}
@@ -320,8 +319,8 @@ const ApprovalRequestsPage = () => {
                     <div className="info-item">
                       <label>Tax Account:</label>
                       <span>
-                        {selectedOrg.taxAccUrl ? (
-                          <a href={selectedOrg.taxAccUrl} target="_blank" rel="noopener noreferrer">
+                        {selectedOrg.vatUrl ? (
+                          <a href={selectedOrg.vatUrl} target="_blank" rel="noopener noreferrer">
                             View Document
                           </a>
                         ) : 'Not provided'}
@@ -370,7 +369,7 @@ const ApprovalRequestsPage = () => {
                     >
                       <option value="">Select status</option>
                       <option value="PENDING">Pending</option>
-                      <option value="APPROVED">Approved</option>
+                      <option value="ACCEPTED">Accepted</option>
                       <option value="REJECTED">Rejected</option>
                     </select>
                   </div>
