@@ -16,10 +16,10 @@ const client = knex({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: {
-      rejectUnauthorized: true,
-      ca: fs.readFileSync(path.join(__dirname, '../../../../', './ca.pem')).toString(), // path to your cert
-    },
+    // ssl: {
+    //   rejectUnauthorized: true,
+    //   ca: fs.readFileSync(path.join(__dirname, '../../../../', './ca.pem')).toString(), // path to your cert
+    // },
   },
   searchPath: ['public'],
 });
