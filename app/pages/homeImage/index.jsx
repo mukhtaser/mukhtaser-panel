@@ -1,5 +1,29 @@
 import { useEffect, useState } from "react";
 
+// API call function
+const apiCall = async (url, options = {}) => {
+  console.log(url, options, ';ssss')
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    });
+    console.log(response, 'RESPOSE')
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
+};
+
+
 export default function HomeImageUploader() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -11,16 +35,11 @@ export default function HomeImageUploader() {
   const fetchCurrentImage = async (language) => {
     try {
       setLoadingPreview(true);
-      const res = await fetch(`/api/homepage/image?lang=${language}`);
-      if (!res.ok) {
-        setPreview(null);
-        return;
-      }
+      const data = await apiCall(`http://localhost:3000/api/v1/assets`, { headers: { lng: language } });
 
-      const data = await res.json();
-      // Expecting response: { url: "https://..." }
-      if (data?.url) {
-        setPreview(data.url);
+
+      if (data?.data.image) {
+        setPreview(data?.data.image.content);
       } else {
         setPreview(null);
       }
@@ -52,19 +71,12 @@ export default function HomeImageUploader() {
 
     try {
       setUploading(true);
-      const res = await fetch("/api/homepage/image", {
+      const data = await fetch("http://localhost:3000/api/v1/assets", {
         method: "POST",
         body: formData,
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Upload failed");
-      }
-
-      const data = await res.json();
-      // Assuming API returns new image link in { url: "https://..." }
-      if (data.url) setPreview(data.url);
+      if (data.data) setPreview(data.data.image.content);
 
       alert("Uploaded successfully!");
     } catch (err) {
@@ -75,65 +87,75 @@ export default function HomeImageUploader() {
   };
 
   return (
-    <div
-      className="flex justify-center items-start min-h-screen bg-gray-50"
-      style={{ paddingLeft: "260px", paddingTop: "40px" }}
-    >
-      <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Upload Homepage Image
-        </h2>
+  <div
+    className="flex justify-center items-start min-h-screen bg-gray-50"
+    style={{ paddingLeft: "260px", paddingTop: "40px" }}
+  >
+    <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-lg">
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        Upload Homepage Image
+      </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Language Selector */}
-          <div>
-            <label className="block mb-2 font-semibold">Select Language</label>
-            <select
-              value={lang}
-              onChange={(e) => setLang(e.target.value)}
-              className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
-            >
-              <option value="ar">Arabic</option>
-              <option value="en">English</option>
-              <option value="ur">Urdu</option>
-            </select>
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Language Selector */}
+        <div>
+          <label className="block mb-2 font-semibold">Select Language</label>
+          <select
+            value={lang}
+            onChange={(e) => setLang(e.target.value)}
+            className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
+          >
+            <option value="ar">Arabic</option>
+            <option value="en">English</option>
+            <option value="ur">Urdu</option>
+          </select>
+        </div>
 
-          {/* Image Upload */}
-          <div>
-            <label className="block mb-2 font-semibold">Upload Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
-            />
-
-            {loadingPreview ? (
-              <p className="text-gray-500 mt-4 text-center">Loading image...</p>
-            ) : preview ? (
-              <img
-                src={preview}
-                alt="Preview"
-                className="mt-4 rounded-lg shadow-md max-h-64 object-contain mx-auto"
-              />
-            ) : (
-              <p className="text-gray-400 mt-4 text-center">
-                No image uploaded for this language
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
+        {/* Image Upload */}
+        <div>
+          <label className="block mb-2 font-semibold">Upload Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
+          />
+        </div>
+{/* Submit Button — moved above preview */}
+        <div className="pt-2">
           <button
             type="submit"
             disabled={uploading}
-            className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg w-full hover:bg-blue-700 transition"
+            className={`w-full py-3 px-6 rounded-lg font-semibold border transition text-center ${
+              uploading
+                ? "bg-gray-300 border-gray-400 !text-gray-700 cursor-not-allowed"
+                : "bg-blue-600 border-blue-700 !text-white hover:bg-blue-700 hover:border-blue-800"
+            }`}
           >
             {uploading ? "Uploading..." : "Upload"}
           </button>
-        </form>
-      </div>
+        </div>
+
+        {/* Image Preview */}
+        <div className="mt-4">
+          {loadingPreview ? (
+            <p className="text-gray-500 text-center">Loading image...</p>
+          ) : preview ? (
+            <img
+              src={preview}
+              alt="Preview"
+              className="rounded-lg shadow-md max-h-64 object-contain mx-auto border border-gray-200"
+            />
+          ) : (
+            <p className="text-gray-400 text-center">
+              No image uploaded for this language
+            </p>
+          )}
+        </div>
+      </form>
     </div>
-  );
+  </div>
+);
+
+
 }
