@@ -1,302 +1,268 @@
 import React, { useEffect, useState } from "react";
-
-/**
- * Ads Management Page for Kottster
- * - Uses endpoints under http://localhost:3000/api/v1/ads
- * - Pagination with `take` and `page` query params
- * - Endpoints used:
- *    GET    /api/v1/ads                -> list (query: take, page, language, target_audience, is_active)
- *    GET    /api/v1/ads/:id            -> single
- *    POST   /api/v1/ads                -> create (FormData: image, redirect_url, language, is_active, target_audience)
- *    PUT    /api/v1/ads/:id            -> update (FormData allowed)
- *
- * Notes:
- * - Backend expected to return JSON for list: { data: Ad[], total: number }
- * - For single/create/update, expected object with the ad or { url } for image. Code is defensive.
- */
-
-
-const API_BASE = "http://localhost:3000/api/v1/ads";
+import ReactDOM from "react-dom";
+import { Plus } from "lucide-react";
 
 export default function AdsManagementPage() {
-  // table state
   const [ads, setAds] = useState([]);
-  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [take, setTake] = useState(10);
+  const [take] = useState(10);
+  const [filters, setFilters] = useState({ lang: "", audience: "", active: "" });
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editingAd, setEditingAd] = useState(null);
+  const [formData, setFormData] = useState({
+    image: null,
+    redirectUrl: "",
+    lng: "ar",
+    isActive: false,
+    targetAudience: "all",
+  });
+  const [preview, setPreview] = useState(null);
+  const [detailAd, setDetailAd] = useState(null);
+  const [showRawJson, setShowRawJson] = useState(false);
 
-  // filters
-  const [filterLang, setFilterLang] = useState("");
-  const [filterTarget, setFilterTarget] = useState("");
-  const [filterActive, setFilterActive] = useState("");
-
-  // modal state
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showViewModal, setShowViewModal] = useState(false);
-  const [activeAd, setActiveAd] = useState(null);
-
-  // form state (used for add/edit)
-  const emptyForm = {
-    imageFile: null ,
-    imagePreview: null ,
-    redirect_url: "",
-    language: "ar",
-    is_active: false,
-    target_audience: "all" ,
+  const renderPortal = (node) => {
+    try {
+      if (typeof document !== "undefined" && document.body) {
+        return ReactDOM.createPortal(node, document.body);
+      }
+    } catch (e) {
+      // fallthrough to return node inline
+    }
+    return node;
   };
 
-  const [form, setForm] = useState({ ...emptyForm });
-  const [submitting, setSubmitting] = useState(false);
+  const API_URL = "http://localhost:3000/api/v1/ads";
 
-  // fetch list
-  const fetchAds = async (pageParam = page, takeParam = take) => {
+  const fetchAds = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      params.set("page", pageParam);
-      params.set("take", takeParam);
-      if (filterLang) params.set("language", filterLang);
-      if (filterTarget) params.set("target_audience", filterTarget);
-      if (filterActive) params.set("is_active", filterActive);
-
-      const res = await fetch(`${API_BASE}?${params.toString()}`);
-      if (!res.ok) throw new Error("Failed to fetch ads");
-      const json = await res.json();
-      // expect { data, total }
-      setAds(json.data || []);
-      setTotal(typeof json.total === "number" ? json.total : (json.data || []).length);
+      const queryParams = {
+        page: String(page),
+        take: String(take),
+      };
+      
+      if (filters.lang) queryParams.lng = filters.lang;
+      if (filters.audience) queryParams.targetAudience = filters.audience.toUpperCase();
+      if (filters.active) queryParams.isActive = filters.active;
+      
+      const query = new URLSearchParams(queryParams).toString();
+      const res = await fetch(`${API_URL}?${query}`);
+      const data = await res.json();
+      setAds(data.data.ads || []);
     } catch (err) {
       console.error(err);
-      setAds([]);
-      setTotal(0);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAds(1, take);
-    setPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterLang, filterTarget, filterActive, take]);
+    fetchAds();
+  }, [page, filters]);
 
-  useEffect(() => {
-    fetchAds(page, take);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
-
-  // helpers
-  const openAdd = () => {
-    setForm({ ...emptyForm });
-    setShowAddModal(true);
+  const openAddModal = () => {
+    setEditingAd(null);
+    setFormData({
+      image: null,
+      redirectUrl: "",
+      lng: "ar",
+      isActive: false,
+      targetAudience: "ALL",
+    });
+    setPreview(null);
+    setShowModal(true);
   };
 
-  const openEdit = async (id) => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, image: file });
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null) fd.append(key, value);
+    });
     try {
-      const res = await fetch(`${API_BASE}/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch ad");
-      const json = await res.json();
-      const ad = json.data || json;
-      setActiveAd(ad);
-      setForm({
-        ...emptyForm,
-        imageFile: null,
-        imagePreview: ad.image_url || null,
-        redirect_url: ad.redirect_url || "",
-        language: ad.language,
-        is_active: !!ad.is_active,
-        target_audience: ad.target_audience,
+      const method = editingAd ? "PUT" : "POST";
+      const url = editingAd ? `${API_URL}/${editingAd.id}` : API_URL;
+      await fetch(url, {
+        method,
+        body: fd,
       });
-      setShowEditModal(true);
+      setShowModal(false);
+      fetchAds();
     } catch (err) {
       console.error(err);
-      alert("Failed to load ad");
     }
   };
 
-  const openView = async (id) => {
+  const formatDate = (ts) => {
     try {
-      const res = await fetch(`${API_BASE}/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch ad");
-      const json = await res.json();
-      const ad = json.data || json;
-      setActiveAd(ad);
-      setShowViewModal(true);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to load ad");
+      if (!ts) return "-";
+      const d = new Date(ts);
+      return isNaN(d.getTime()) ? String(ts) : d.toLocaleString();
+    } catch (e) {
+      return String(ts);
     }
   };
 
-  // form handlers
-  const onFileChange = (f) => {
-    if (!f) return setForm((s) => ({ ...s, imageFile: null, imagePreview: null }));
-    const url = URL.createObjectURL(f);
-    setForm((s) => ({ ...s, imageFile: f, imagePreview: url }));
-  };
-
-  const handleCreateOrUpdate = async (isUpdate = false) => {
-    setSubmitting(true);
-    try {
-      const fd = new FormData();
-      if (form.imageFile) fd.append("image", form.imageFile);
-      fd.append("redirect_url", form.redirect_url || "");
-      fd.append("language", form.language);
-      fd.append("is_active", `${form.is_active}`);
-      fd.append("target_audience", form.target_audience);
-
-      const url = isUpdate && activeAd ? `${API_BASE}/${activeAd.id}` : API_BASE;
-      const method = isUpdate ? "PUT" : "POST";
-
-      const res = await fetch(url, { method, body: fd });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || "Failed to save ad");
-
-      // refresh list and close modal
-      await fetchAds(1, take);
-      setPage(1);
-      setShowAddModal(false);
-      setShowEditModal(false);
-      alert("Saved successfully");
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Save error");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // pagination helpers
-  const totalPages = Math.max(1, Math.ceil(total / take));
+  // close modals on Escape
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        setDetailAd(null);
+        setShowModal(false);
+      }
+    };
+    if (detailAd || showModal) window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [detailAd, showModal]);
 
   return (
     <div
-      className="min-h-screen bg-gray-50"
-      style={{ paddingLeft: "260px", paddingTop: "24px", paddingBottom: "40px" }}
+      className="flex flex-col min-h-screen bg-gray-50"
+      style={{ marginLeft: "260px", paddingTop: "40px", width: "calc(100% - 260px)" }}
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Ads Management</h1>
-
-          <div className="flex items-center gap-3">
-            {/* Filters */}
-            <select
-              value={filterLang}
-              onChange={(e) => setFilterLang(e.target.value)}
-              className="border rounded p-2"
-            >
-              <option value="">All languages</option>
-              <option value="ar">Arabic</option>
-              <option value="en">English</option>
-              <option value="ur">Urdu</option>
-            </select>
-
-            <select
-              value={filterTarget}
-              onChange={(e) => setFilterTarget(e.target.value)}
-              className="border rounded p-2"
-            >
-              <option value="">All audiences</option>
-              <option value="individuals">Individuals</option>
-              <option value="companies">Companies</option>
-              <option value="paid_companies">Paid companies</option>
-              <option value="all">All users</option>
-            </select>
-
-            <select
-              value={filterActive}
-              onChange={(e) => setFilterActive(e.target.value)}
-              className="border rounded p-2"
-            >
-              <option value="">Any</option>
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </select>
-
-            <button
-              onClick={() => {
-                setFilterLang("");
-                setFilterTarget("");
-                setFilterActive("");
-              }}
-              className="px-3 py-2 border rounded"
-            >
-              Reset
-            </button>
-
-            <button
-              onClick={openAdd}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              + Add Ad
-            </button>
-          </div>
+      <div className="p-6 w-full">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Ads Management</h2>
+          <button
+            onClick={openAddModal}
+            className="flex items-center !bg-blue-600 !text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            <Plus className="w-5 h-5 mr-2" /> Add Ad
+          </button>
         </div>
 
-        {/* Table Card */}
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
-          <table className="min-w-full divide-y">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Image</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Redirect URL</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Language</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Active</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Target Audience</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Created</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Updated</th>
-                <th className="px-4 py-2 text-right text-sm font-medium">Actions</th>
+        {/* Filters */}
+        <div className="flex gap-4 mb-4">
+          <select
+            value={filters.lang}
+            onChange={(e) => setFilters({ ...filters, lang: e.target.value })}
+            className="border p-2 rounded-lg"
+          >
+            <option value="">All Languages</option>
+            <option value="ar">Arabic</option>
+            <option value="en">English</option>
+            <option value="ur">Urdu</option>
+          </select>
+          <select
+            value={filters.audience}
+            onChange={(e) => setFilters({ ...filters, audience: e.target.value })}
+            className="border p-2 rounded-lg"
+          >
+            <option value="">All Audiences</option>
+            <option value="all">All</option>
+            <option value="individuals">Individuals</option>
+            <option value="companies">Companies</option>
+            <option value="paid_companies">Paid Companies</option>
+          </select>
+          <select
+            value={filters.active}
+            onChange={(e) => setFilters({ ...filters, active: e.target.value })}
+            className="border p-2 rounded-lg"
+          >
+            <option value="">All Statuses</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+
+        {/* Table */}
+        <div className="bg-white shadow-md rounded-xl overflow-hidden">
+          <div className="overflow-x-auto w-full">
+            <table className="min-w-full border-collapse">
+              <thead className="bg-gray-100 text-gray-700">
+                <tr>
+                  <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "80px" }}>Image</th>
+                <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "200px" }}>Redirect URL</th>
+                <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "100px" }}>Language</th>
+                <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "80px" }}>Active</th>
+                <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "120px" }}>Audience</th>
+                <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "160px" }}>Updated At</th>
+                <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "160px" }}>Created At</th>
+                <th className="py-2 px-4 border whitespace-nowrap" style={{ minWidth: "140px" }}>Actions</th>
               </tr>
             </thead>
-
-            <tbody className="divide-y">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={9} className="px-4 py-6 text-center text-gray-500">
+                  <td colSpan="8" className="text-center py-6 text-gray-500">
                     Loading...
                   </td>
                 </tr>
-              ) : ads.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="px-4 py-6 text-center text-gray-500">
-                    No ads found
-                  </td>
-                </tr>
-              ) : (
+              ) : ads.length > 0 ? (
                 ads.map((ad) => (
-                  <tr key={ad.id}>
-                    <td className="px-4 py-3 text-sm">{ad.id}</td>
-                    <td className="px-4 py-3 text-sm">
-                      {ad.image_url ? (
-                        <img
-                          src={ad.image_url}
-                          alt={`ad-${ad.id}`}
-                          className="w-28 h-16 object-cover rounded border"
-                        />
+                  <tr key={ad.id} className="border-t hover:bg-gray-50">
+                    <td className="py-2 px-4 text-center whitespace-nowrap">
+                      <img
+                        src={ad.imageUrl}
+                        alt="ad"
+                        className="h-12 w-12 object-cover rounded mx-auto"
+                      />
+                    </td>
+                    <td className="py-2 px-4 truncate max-w-xs">{ad.redirectUrl}</td>
+                    <td className="py-2 px-4 text-center whitespace-nowrap">{ad.lng}</td>
+                    <td className="py-2 px-4 text-center whitespace-nowrap">
+                      {ad.isActive ? (
+                        <span className="text-green-600 font-semibold">Yes</span>
                       ) : (
-                        <span className="text-sm text-gray-400">No image</span>
+                        <span className="text-red-500 font-semibold">No</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm max-w-xs break-words">{ad.redirect_url || "-"}</td>
-                    <td className="px-4 py-3 text-sm">{ad.language}</td>
-                    <td className="px-4 py-3 text-sm">{ad.is_active ? "Yes" : "No"}</td>
-                    <td className="px-4 py-3 text-sm">{ad.target_audience}</td>
-                    <td className="px-4 py-3 text-sm">{ad.created_at ? new Date(ad.created_at).toLocaleString() : "-"}</td>
-                    <td className="px-4 py-3 text-sm">{ad.updated_at ? new Date(ad.updated_at).toLocaleString() : "-"}</td>
-                    <td className="px-4 py-3 text-sm text-right">
-                      <div className="inline-flex gap-2">
+                    <td className="py-2 px-4 text-center whitespace-nowrap">{ad.targetAudience}</td>
+                    <td className="py-2 px-4 text-center whitespace-nowrap">{formatDate(ad.updatedAt)}</td>
+                    <td className="py-2 px-4 text-center whitespace-nowrap">{formatDate(ad.createdAt)}</td>
+                    <td className="py-2 px-4 text-center whitespace-nowrap">
+                      <div className="flex items-center justify-center gap-2" style={{ overflow: "visible" }}>
                         <button
-                          onClick={() => openView(ad.id)}
-                          className="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+                          onClick={() => setDetailAd(ad)}
+                          title="Show details"
+                          style={{
+                            display: "inline-block",
+                            backgroundColor: "#2563eb",
+                            color: "#fff",
+                            padding: "6px 10px",
+                            borderRadius: 6,
+                            fontSize: "0.875rem",
+                            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                            position: "relative",
+                            zIndex: 9999,
+                          }}
                         >
-                          View
+                          Show
                         </button>
                         <button
-                          onClick={() => openEdit(ad.id)}
-                          className="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+                          onClick={() => {
+                            setEditingAd(ad);
+                            setFormData({
+                              image: null,
+                              redirectUrl: ad.redirectUrl,
+                              lng: ad.lng,
+                              isActive: ad.isActive,
+                              targetAudience: ad.targetAudience,
+                            });
+                            setPreview(ad.imageUrl);
+                            setShowModal(true);
+                          }}
+                          title="Edit ad"
+                          style={{
+                            display: "inline-block",
+                            backgroundColor: "#d97706",
+                            color: "#fff",
+                            padding: "6px 10px",
+                            borderRadius: 6,
+                            fontSize: "0.875rem",
+                            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                            position: "relative",
+                            zIndex: 9999,
+                          }}
                         >
                           Edit
                         </button>
@@ -304,209 +270,265 @@ export default function AdsManagementPage() {
                     </td>
                   </tr>
                 ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center py-6 text-gray-500">
+                    No ads found
+                  </td>
+                </tr>
               )}
-            </tbody>
-          </table>
-
-          {/* Pagination */}
-          <div className="flex items-center justify-between px-4 py-3 border-t">
-            <div className="text-sm text-gray-600">
-              Showing {(page - 1) * take + 1} - {Math.min(page * take, total)} of {total}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <select value={take} onChange={(e) => setTake(Number(e.target.value))} className="border rounded p-1">
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-              </select>
-
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="px-2 py-1 border rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-
-              <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPage(i + 1)}
-                    className={`px-2 py-1 rounded text-sm ${page === i + 1 ? 'bg-blue-600 text-white' : 'border'}`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="px-2 py-1 border rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
+              </tbody>
+            </table>
           </div>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="px-4 py-2 border rounded-l-lg bg-gray-100 hover:bg-gray-200"
+          >
+            Prev
+          </button>
+          <span className="px-4 py-2 border-t border-b">Page {page}</span>
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            className="px-4 py-2 border rounded-r-lg bg-gray-100 hover:bg-gray-200"
+          >
+            Next
+          </button>
         </div>
       </div>
 
-      {/* --- View Modal --- */}
-      {showViewModal && activeAd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">Ad Details</h3>
-            <div className="mb-4">
-              {activeAd.image_url ? (
-                <img src={activeAd.image_url} alt="preview" className="w-full h-48 object-contain rounded border" />
-              ) : (
-                <div className="w-full h-48 flex items-center justify-center bg-gray-100 rounded">No image</div>
-              )}
-            </div>
-            <div className="space-y-2 text-sm">
-              <div><strong>Redirect:</strong> {activeAd.redirect_url || '-'}</div>
-              <div><strong>Language:</strong> {activeAd.language}</div>
-              <div><strong>Active:</strong> {activeAd.is_active ? 'Yes' : 'No'}</div>
-              <div><strong>Target:</strong> {activeAd.target_audience}</div>
+      {/* Modal */}
+      {showModal && renderPortal(
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+          style={{ left: 0, right: 0, top: 0, bottom: 0, zIndex: 2147483647 }}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col relative"
+            style={{ height: 'min(600px, 80vh)', zIndex: 9999 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            
+            <div className="px-6 py-4 border-b flex items-center justify-between bg-white">
+              <h3 className="text-xl font-bold">
+                {editingAd ? "Edit Ad" : "Add New Ad"}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-xl"
+                aria-label="Close"
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="mt-4 flex justify-end gap-2">
-              <button onClick={() => setShowViewModal(false)} className="px-3 py-1 border rounded">Close</button>
+            {/* Modal Content - Split Layout */}
+            <div className="flex-1 flex">
+              {/* Left side - Fixed Image */}
+              <div className="w-64 border-r bg-gray-50 flex flex-col">
+                <div className="p-5 space-y-4">
+                  <div className="bg-white rounded-lg p-4">
+                    <label className="block font-semibold text-sm mb-2">Upload Image</label>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleFileChange} 
+                      className="w-full border p-2 rounded-lg bg-white text-sm"
+                    />
+                  </div>
+                  <div className="flex items-center justify-center pt-2">
+                    {preview ? (
+                      <div className="bg-white rounded-lg p-3 shadow-sm border" style={{ width: '200px', height: '140px' }}>
+                        <img
+                          src={preview}
+                          alt="Preview"
+                          className="w-full h-full object-contain rounded-lg"
+                        />
+                      </div>
+                    ) : (
+                      <div className="bg-white rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300" style={{ width: '200px', height: '140px' }}>
+                        <span className="text-gray-400 text-sm">No image selected</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right side - Scrollable Form */}
+              <div className="flex-1 overflow-y-auto p-6" style={{ marginBottom: "60px" }}>
+                <form id="adForm" onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label className="block font-semibold mb-2">Redirect URL</label>
+                    <input
+                      type="text"
+                      value={formData.redirectUrl}
+                      onChange={(e) => setFormData({ ...formData, redirectUrl: e.target.value })}
+                      className="border p-4 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2">Language</label>
+                    <select
+                      value={formData.language}
+                      onChange={(e) => setFormData({ ...formData, lng: e.target.value })}
+                      className="border p-4 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white"
+                    >
+                      <option value="ar">Arabic</option>
+                      <option value="en">English</option>
+                      <option value="ur">Urdu</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2">Target Audience</label>
+                    <select
+                      value={formData.targetAudience}
+                      onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
+                      className="border p-4 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white"
+                    >
+                      <option value="ALL">All</option>
+                      <option value="INIVIDUALS">Individuals</option>
+                      <option value="COMPANIES">Companies</option>
+                      <option value="PAID_COMPANIES">Paid Companies</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center space-x-3 p-2">
+                    <input
+                      type="checkbox"
+                      id="isActive"
+                      checked={formData.isActive}
+                      onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                      className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="isActive" className="font-semibold">Active</label>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t px-6 py-4 !bg-blue sticky bottom-0 left-0 right-0">
+              <button
+                type="submit"
+                form="adForm"
+                className="w-full !bg-blue-600 !text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-colors"
+                style={{ zIndex: 100 }}
+              >
+                {editingAd ? "Save Changes" : "Add Ad"}
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* --- Add Modal --- */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">Add New Ad</h3>
-
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium mb-1">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => onFileChange(e.target.files ? e.target.files[0] : null)}
-                />
-                {form.imagePreview && (
-                  <img src={form.imagePreview} className="mt-3 w-full h-40 object-contain rounded border" alt="preview" />
-                )}
+      {/* Detail (Show) Modal */}
+  {detailAd && renderPortal(
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-4 overflow-auto"
+          onClick={() => setDetailAd(null)}
+          style={{ left: 0, right: 0, top: 0, bottom: 0, zIndex: 2147483647 }}
+        >
+          <div
+            className="bg-white rounded-xl shadow-xl p-4 w-full max-w-4xl relative mx-auto"
+            style={{ maxHeight: "90vh", overflow: "auto", margin: '0 16px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <div className="flex items-center gap-3">
+                <h3 className="text-lg md:text-2xl font-bold">Ad Details</h3>
+                <span className="text-sm text-gray-500">(ID: {detailAd.id})</span>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Redirect URL</label>
-                <input
-                  value={form.redirect_url}
-                  onChange={(e) => setForm((s) => ({ ...s, redirect_url: e.target.value }))}
-                  className="w-full border rounded p-2"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Language</label>
-                  <select value={form.language} onChange={(e) => setForm((s) => ({ ...s, language: e.target.value  }))} className="w-full border rounded p-2">
-                    <option value="ar">Arabic</option>
-                    <option value="en">English</option>
-                    <option value="ur">Urdu</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Target Audience</label>
-                  <select value={form.target_audience} onChange={(e) => setForm((s) => ({ ...s, target_audience: e.target.value  }))} className="w-full border rounded p-2">
-                    <option value="individuals">Individuals</option>
-                    <option value="companies">Companies</option>
-                    <option value="paid_companies">Paid companies</option>
-                    <option value="all">All users</option>
-                  </select>
-                </div>
-              </div>
-
               <div className="flex items-center gap-2">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((s) => ({ ...s, is_active: e.target.checked }))} />
-                  <span className="text-sm">Active</span>
-                </label>
-              </div>
-
-              <div className="flex justify-end gap-2 mt-4">
-                <button onClick={() => setShowAddModal(false)} className="px-3 py-1 border rounded">Cancel</button>
-                <button onClick={() => handleCreateOrUpdate(false)} disabled={submitting} className={`px-4 py-2 rounded ${submitting ? 'bg-gray-300 border-gray-400' : 'bg-blue-600 text-white'}`}>
-                  {submitting ? 'Saving...' : 'Save'}
+                <button
+                  onClick={() => {
+                    try {
+                      navigator.clipboard.writeText(detailAd.redirectUrl || "");
+                    } catch (e) {
+                      // ignore
+                    }
+                  }}
+                  title="Copy redirect URL"
+                  className="inline-flex items-center gap-2 bg-gray-100 text-gray-800 px-3 py-1 rounded hover:bg-gray-200 text-sm"
+                >
+                  Copy URL
+                </button>
+                <button
+                  onClick={() => window.open(detailAd.imageUrl || "", "_blank")}
+                  title="Open image in new tab"
+                  className="inline-flex items-center gap-2 bg-gray-100 text-gray-800 px-3 py-1 rounded hover:bg-gray-200 text-sm"
+                >
+                  Open Image
+                </button>
+                <button
+                  onClick={() => setDetailAd(null)}
+                  title="Close"
+                  aria-label="Close details modal"
+                  className="inline-flex items-center gap-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+                >
+                  Close
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* --- Edit Modal --- */}
-      {showEditModal && activeAd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">Edit Ad #{activeAd.id}</h3>
-
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium mb-1">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => onFileChange(e.target.files ? e.target.files[0] : null)}
-                />
-                {form.imagePreview && (
-                  <img src={form.imagePreview} className="mt-3 w-full h-40 object-contain rounded border" alt="preview" />
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Redirect URL</label>
-                <input
-                  value={form.redirect_url}
-                  onChange={(e) => setForm((s) => ({ ...s, redirect_url: e.target.value }))}
-                  className="w-full border rounded p-2"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Language</label>
-                  <select value={form.language} onChange={(e) => setForm((s) => ({ ...s, language: e.target.value  }))} className="w-full border rounded p-2">
-                    <option value="ar">Arabic</option>
-                    <option value="en">English</option>
-                    <option value="ur">Urdu</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Target Audience</label>
-                  <select value={form.target_audience} onChange={(e) => setForm((s) => ({ ...s, target_audience: e.target.value  }))} className="w-full border rounded p-2">
-                    <option value="individuals">Individuals</option>
-                    <option value="companies">Companies</option>
-                    <option value="paid_companies">Paid companies</option>
-                    <option value="all">All users</option>
-                  </select>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="md:col-span-1 flex items-center justify-center">
+                <div className="w-full">
+                  <div className="bg-gray-50 rounded-lg p-3 flex items-center justify-center">
+                    <a href={detailAd.imageUrl} target="_blank" rel="noreferrer" className="block">
+                      <img
+                        src={detailAd.imageUrl}
+                        alt={`Ad ${detailAd.id}`}
+                        className="w-80 max-w-full max-h-64 object-contain rounded-md mx-auto"
+                      />
+                    </a>
+                  </div>
+                  {detailAd.imageUrl && (
+                    <p className="mt-2 text-xs text-gray-500 text-center break-all">{detailAd.imageUrl}</p>
+                  )}
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((s) => ({ ...s, is_active: e.target.checked }))} />
-                  <span className="text-sm">Active</span>
-                </label>
-              </div>
+              <div className="md:col-span-2">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-semibold text-gray-600">Redirect URL</label>
+                    <div className="mt-1 text-sm break-words text-gray-800 bg-white p-2 border rounded">{detailAd.redirectUrl || "-"}</div>
+                  </div>
 
-              <div className="flex justify-end gap-2 mt-4">
-                <button onClick={() => setShowEditModal(false)} className="px-3 py-1 border rounded">Cancel</button>
-                <button onClick={() => handleCreateOrUpdate(true)} disabled={submitting} className={`px-4 py-2 rounded ${submitting ? 'bg-gray-300 border-gray-400' : 'bg-blue-600 text-white'}`}>
-                  {submitting ? 'Saving...' : 'Save'}
-                </button>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-semibold text-gray-600">Language</label>
+                      <div className="mt-1 text-sm text-gray-800">{detailAd.lng || "-"}</div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-gray-600">Active</label>
+                      <div className="mt-1 text-sm text-gray-800">{detailAd.isActive ? "Yes" : "No"}</div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-gray-600">Audience</label>
+                    <div className="mt-1 text-sm text-gray-800">{detailAd.targetAudience || "-"}</div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-semibold text-gray-600">Created At</label>
+                      <div className="mt-1 text-sm text-gray-800">{formatDate(detailAd.createdAt)}</div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-gray-600">Updated At</label>
+                      <div className="mt-1 text-sm text-gray-800">{formatDate(detailAd.updatedAt)}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
