@@ -1,22 +1,7 @@
-// import { TablePage, Page, useCallProcedure } from '@kottster/react';
 
-// // Learn more about building custom pages:
-// // https://kottster.app/docs/custom-pages/introduction
-
-// export default () => {
-//   // const callProcedure = useCallProcedure();
-
-//   return (
-//     <TablePage>
-//       <div>Loading...</div>;
-
-//     </TablePage>
-//   );
-// };
-// pages/approval-requests.tsx
-// pages/approval-requests/index.jsx
 import React, { useState, useEffect } from 'react';
 import './styles.css'; // We'll create this for basic styling
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
 
 const ApprovalRequestsPage = () => {
   const [requests, setRequests] = useState([]);
@@ -61,7 +46,7 @@ const ApprovalRequestsPage = () => {
   const fetchApprovalRequests = async (page = 1, take = 10) => {
     setLoading(true);
     try {
-      const data = await apiCall(`http://localhost:3000/api/v1/approve-requests?page=${page}&take=${take}`);
+      const data = await apiCall(`${BACKEND_URL}/api/v1/approve-requests?page=${page}&take=${take}`);
       console.log(data)
       setRequests(data.data.requests);
       setPagination({
@@ -79,7 +64,7 @@ const ApprovalRequestsPage = () => {
   // Fetch organization details
   const fetchOrganizationDetails = async (organizationId) => {
     try {
-      const data = await apiCall(`http://localhost:3000/api/v1/orgs/${organizationId}`);
+      const data = await apiCall(`${BACKEND_URL}/api/v1/orgs/${organizationId}`);
 
         setSelectedOrg(data.data.organization);
         setOrgModalVisible(true);
@@ -95,7 +80,7 @@ const ApprovalRequestsPage = () => {
     if (!selectedRequest) return;
 
     try {
-      const data = await apiCall(`http://localhost:3000/api/v1/approve-requests/${selectedRequest.id}`, {
+      const data = await apiCall(`${BACKEND_URL}/api/v1/approve-requests/${selectedRequest.id}`, {
         method: 'PUT',
         body: JSON.stringify({
           status: formData.status,

@@ -7,6 +7,7 @@ const JWT_SECRET_SALT = getEnvOrThrow('JWT_SECRET_SALT');
 const ROOT_USER_PASSWORD = getEnvOrThrow('ROOT_USER_PASSWORD');
 const ROOT_USERNAME = getEnvOrThrow('ROOT_USERNAME');
 const API_TOKEN = getEnvOrThrow('API_TOKEN');
+export const BACKEND_URL = getEnvOrThrow('BACKEND_URL');
 
 /* 
  * For security, consider moving the secret data to environment variables.
