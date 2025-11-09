@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+const BACKEND_URL = process.env.BACKEND_URL
 
-// API call function
 const apiCall = async (url, options = {}) => {
   console.log(url, options, ';ssss')
   try {
@@ -11,7 +11,6 @@ const apiCall = async (url, options = {}) => {
       },
       ...options,
     });
-    console.log(response, 'RESPOSE')
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -35,7 +34,7 @@ export default function HomeImageUploader() {
   const fetchCurrentImage = async (language) => {
     try {
       setLoadingPreview(true);
-      const data = await apiCall(`http://localhost:3000/api/v1/assets`, { headers: { lng: language } });
+      const data = await apiCall(`${BACKEND_URL}/api/v1/assets`, { headers: { lng: language } });
 
 
       if (data?.data.image) {
@@ -71,9 +70,12 @@ export default function HomeImageUploader() {
 
     try {
       setUploading(true);
-      const data = await fetch("http://localhost:3000/api/v1/assets", {
+      const data = await fetch(`${BACKEND_URL}/api/v1/assets`, {
         method: "POST",
         body: formData,
+        headers: {
+          lng: lang,
+        }
       });
 
       if (data.data) setPreview(data.data.image.content);
