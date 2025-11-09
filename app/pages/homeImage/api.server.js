@@ -1,5 +1,7 @@
 import { app } from '../../_server/app';
+import { getEnvOrThrow } from '@kottster/common';
 
+export const BACKEND_URL = getEnvOrThrow('BACKEND_URL');
 /*
  * Custom server procedures for your page
  * 
