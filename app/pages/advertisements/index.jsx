@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Plus } from "lucide-react";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
 
 export default function AdsManagementPage() {
   const [ads, setAds] = useState([]);
@@ -32,7 +33,7 @@ export default function AdsManagementPage() {
     return node;
   };
 
-  const API_URL = "http://localhost:3000/api/v1/ads";
+  const API_URL = `${BACKEND_URL}/api/v1/ads`;
 
   const fetchAds = async () => {
     setLoading(true);

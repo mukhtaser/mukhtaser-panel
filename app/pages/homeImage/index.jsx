@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-const  BACKEND_URL = import.meta.env.VITE_BACKEND_URL
-console.log(BACKEND_URL, 'BACKEND_URL')
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
 
 // API call function
 const apiCall = async (url, options = {}) => {
-  console.log(url, options, ';ssss')
+  console.log(BACKEND_URL, 'BACKEND_URL', import.meta.env.VITE_BACKEND_URL, 'from .env')
   try {
     const response = await fetch(url, {
       headers: {
@@ -75,7 +74,7 @@ export default function HomeImageUploader() {
       const data = await fetch(`${BACKEND_URL}/api/v1/assets`, {
         method: "POST",
         body: formData,
-        headers:{
+        headers: {
           lng: lang
         }
       });
@@ -91,75 +90,74 @@ export default function HomeImageUploader() {
   };
 
   return (
-  <div
-    className="flex justify-center items-start min-h-screen bg-gray-50"
-    style={{ paddingLeft: "260px", paddingTop: "40px" }}
-  >
-    <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Upload Homepage Image
-      </h2>
+    <div
+      className="flex justify-center items-start min-h-screen bg-gray-50"
+      style={{ paddingLeft: "260px", paddingTop: "40px" }}
+    >
+      <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Upload Homepage Image
+        </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Language Selector */}
-        <div>
-          <label className="block mb-2 font-semibold">Select Language</label>
-          <select
-            value={lang}
-            onChange={(e) => setLang(e.target.value)}
-            className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
-          >
-            <option value="ar">Arabic</option>
-            <option value="en">English</option>
-            <option value="ur">Urdu</option>
-          </select>
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Language Selector */}
+          <div>
+            <label className="block mb-2 font-semibold">Select Language</label>
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
+            >
+              <option value="ar">Arabic</option>
+              <option value="en">English</option>
+              <option value="ur">Urdu</option>
+            </select>
+          </div>
 
-        {/* Image Upload */}
-        <div>
-          <label className="block mb-2 font-semibold">Upload Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
-          />
-        </div>
-{/* Submit Button — moved above preview */}
-        <div className="pt-2">
-          <button
-            type="submit"
-            disabled={uploading}
-            className={`w-full py-3 px-6 rounded-lg font-semibold border transition text-center ${
-              uploading
+          {/* Image Upload */}
+          <div>
+            <label className="block mb-2 font-semibold">Upload Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="border rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300"
+            />
+          </div>
+          {/* Submit Button — moved above preview */}
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={uploading}
+              className={`w-full py-3 px-6 rounded-lg font-semibold border transition text-center ${uploading
                 ? "bg-gray-300 border-gray-400 !text-gray-700 cursor-not-allowed"
                 : "bg-blue-600 border-blue-700 !text-white hover:bg-blue-700 hover:border-blue-800"
-            }`}
-          >
-            {uploading ? "Uploading..." : "Upload"}
-          </button>
-        </div>
+                }`}
+            >
+              {uploading ? "Uploading..." : "Upload"}
+            </button>
+          </div>
 
-        {/* Image Preview */}
-        <div className="mt-4">
-          {loadingPreview ? (
-            <p className="text-gray-500 text-center">Loading image...</p>
-          ) : preview ? (
-            <img
-              src={preview}
-              alt="Preview"
-              className="rounded-lg shadow-md max-h-64 object-contain mx-auto border border-gray-200"
-            />
-          ) : (
-            <p className="text-gray-400 text-center">
-              No image uploaded for this language
-            </p>
-          )}
-        </div>
-      </form>
+          {/* Image Preview */}
+          <div className="mt-4">
+            {loadingPreview ? (
+              <p className="text-gray-500 text-center">Loading image...</p>
+            ) : preview ? (
+              <img
+                src={preview}
+                alt="Preview"
+                className="rounded-lg shadow-md max-h-64 object-contain mx-auto border border-gray-200"
+              />
+            ) : (
+              <p className="text-gray-400 text-center">
+                No image uploaded for this language
+              </p>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-);
+  );
 
 
 }
