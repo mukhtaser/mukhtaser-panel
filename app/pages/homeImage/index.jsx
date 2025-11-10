@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
 
 const apiCall = async (url, options = {}) => {
-  console.log(BACKEND_URL, 'BACKEND_URL', import.meta.env.VITE_BACKEND_URL, 'from .env')
   try {
     const response = await fetch(url, {
       headers: {
