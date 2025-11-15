@@ -1,7 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import './styles.css'; // We'll create this for basic styling
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000' //|| 'https://backend.mukhtaser.sa';
+
+
+const formatDate = (ts) => {
+  try {
+    if (!ts) return "-";
+    const d = new Date(ts);
+    return isNaN(d.getTime()) ? String(ts) : d.toLocaleString();
+  } catch (e) {
+    return String(ts);
+  }
+};
 
 const ApprovalRequestsPage = () => {
   const [requests, setRequests] = useState([]);
@@ -66,9 +77,9 @@ const ApprovalRequestsPage = () => {
     try {
       const data = await apiCall(`${BACKEND_URL}/api/v1/orgs/${organizationId}`);
 
-        setSelectedOrg(data.data.organization);
-        setOrgModalVisible(true);
-      
+      setSelectedOrg(data.data.organization);
+      setOrgModalVisible(true);
+
     } catch (error) {
       alert('Error fetching organization details');
     }
@@ -272,9 +283,64 @@ const ApprovalRequestsPage = () => {
                       <span>{selectedOrg.phoneNumber}</span>
                     </div>
                     <div className="info-item">
+                      <label>Unified National Number: </label>
+                      <span>{selectedOrg.unifiedNationalNumber ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
                       <label>Status:</label>
                       <span><StatusBadge status={selectedOrg.status} /></span>
                     </div>
+                  </div>
+                </div>
+
+                <div className="info-section">
+                  <h3>Tax Account</h3>
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <label>Tax Number:</label>
+                      <span>{selectedOrg.taxAccount?.taxNumber ?? '-'}</span>
+                    </div>
+
+                    <div className="info-item">
+                      <label>Tax Number:</label>
+                      <span>{selectedOrg.taxAccount?.expiresAt ? formatDate(selectedOrg.taxAccount.expiresAt) : '-'}</span>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div className="info-section">
+                  <h3>Address</h3>
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <label>Short Address:</label>
+                      <span>{selectedOrg.address?.address ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>City:</label>
+                      <span>{selectedOrg.address?.city ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>District:</label>
+                      <span>{selectedOrg.address?.district ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Street:</label>
+                      <span>{selectedOrg.address?.street ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Postal Code:</label>
+                      <span>{selectedOrg.address?.postalCode ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Sub Number:</label>
+                      <span>{selectedOrg.address?.subNumber ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Secondary Number:</label>
+                      <span>{selectedOrg.address?.secondaryNumber ?? '-'}</span>
+                    </div>
+
                   </div>
                 </div>
 
