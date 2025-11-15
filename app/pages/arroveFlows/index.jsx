@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import './styles.css'; // We'll create this for basic styling
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000' //|| 'https://backend.mukhtaser.sa';
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000' //|| 'https://backend.mukhtaser.sa';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
 
 
 const formatDate = (ts) => {
