@@ -19,6 +19,9 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
 
 .requests-table {
@@ -73,6 +76,15 @@
   background-color: #40a9ff;
 }
 
+.btn-edit {
+  background-color: #ac3621;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #ee7057;
+}
+
 .btn-action {
   background-color: #52c41a;
   color: white;
@@ -92,7 +104,8 @@
   color: #333;
 }
 
-.loading, .no-data {
+.loading,
+.no-data {
   padding: 40px;
   text-align: center;
   color: #666;

@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import './styles.css'; // We'll create this for basic styling
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000' //|| 'https://backend.mukhtaser.sa';
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000' //|| 'https://backend.mukhtaser.sa';
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
 
 
 const formatDate = (ts) => {
@@ -31,6 +31,11 @@ const ApprovalRequestsPage = () => {
     status: '',
     note: ''
   });
+  // Edit Org modal state
+  const [editOrgModalVisible, setEditOrgModalVisible] = useState(false);
+  const [editOrgData, setEditOrgData] = useState(null);
+  const [editOrgLoading, setEditOrgLoading] = useState(false);
+  const [editOrgError, setEditOrgError] = useState(null);
 
   // API call function
   const apiCall = async (url, options = {}) => {
@@ -73,16 +78,24 @@ const ApprovalRequestsPage = () => {
     }
   };
 
-  // Fetch organization details
-  const fetchOrganizationDetails = async (organizationId) => {
+  // Fetch organization details (for both view and edit)
+  const fetchOrganizationDetails = async (organizationId, forEdit = false) => {
     try {
       const data = await apiCall(`${BACKEND_URL}/api/v1/orgs/${organizationId}`);
-
-      setSelectedOrg(data.data.organization);
-      setOrgModalVisible(true);
-
+      if (forEdit) {
+        setEditOrgData(data.data.organization);
+        setEditOrgModalVisible(true);
+        setEditOrgError(null);
+      } else {
+        setSelectedOrg(data.data.organization);
+        setOrgModalVisible(true);
+      }
     } catch (error) {
-      alert('Error fetching organization details');
+      if (forEdit) {
+        setEditOrgError('Error fetching organization details');
+      } else {
+        alert('Error fetching organization details');
+      }
     }
   };
 
@@ -117,6 +130,117 @@ const ApprovalRequestsPage = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  // Edit Org form input changes
+  const handleEditOrgInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditOrgData(prev => {
+      // Nested fields: address, taxAccount, organizationSupport
+      if (name.startsWith('address.')) {
+        const key = name.replace('address.', '');
+        return {
+          ...prev,
+          address: {
+            ...prev.address,
+            [key]: value
+          }
+        };
+      } else if (name.startsWith('taxAccount.')) {
+        const key = name.replace('taxAccount.', '');
+        return {
+          ...prev,
+          taxAccount: {
+            ...prev.taxAccount,
+            [key]: value
+          }
+        };
+      } else if (name.startsWith('organizationSupport.')) {
+        const key = name.replace('organizationSupport.', '');
+        return {
+          ...prev,
+          organizationSupport: {
+            ...prev.organizationSupport,
+            [key]: value
+          }
+        };
+      } else {
+        return {
+          ...prev,
+          [name]: value
+        };
+      }
+    });
+  };
+
+  // Handle Edit Org button click
+  const handleEditOrgClick = (organizationId) => {
+    setEditOrgLoading(true);
+    fetchOrganizationDetails(organizationId, true).finally(() => setEditOrgLoading(false));
+  };
+
+  // Handle Edit Org form submit
+  const handleEditOrgSubmit = async (e) => {
+    e.preventDefault();
+    if (!editOrgData) return;
+    setEditOrgLoading(true);
+    setEditOrgError(null);
+    try {
+      // Compose payload
+      const payload = {
+        name: editOrgData.name,
+        email: editOrgData.email,
+        phoneNumber: editOrgData.phoneNumber,
+        unifiedNationalNumber: editOrgData.unifiedNationalNumber,
+        address: {
+          address: editOrgData.address?.address,
+          city: editOrgData.address?.city,
+          district: editOrgData.address?.district,
+          street: editOrgData.address?.street,
+          postalCode: editOrgData.address?.postalCode,
+          subNumber: editOrgData.address?.subNumber,
+          secondaryNumber: editOrgData.address?.secondaryNumber,
+        },
+        taxAccount: {
+          taxNumber: editOrgData.taxAccount?.taxNumber,
+          expiresAt: editOrgData.taxAccount?.expiresAt,
+        },
+        organizationSupport: {
+          fullName: editOrgData.organizationSupport?.fullName,
+          phoneNumber: editOrgData.organizationSupport?.phoneNumber,
+          title: editOrgData.organizationSupport?.title,
+        }
+      };
+      await apiCall(`${BACKEND_URL}/api/v1/orgs/${editOrgData.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload)
+      });
+      alert('Organization updated successfully');
+      setEditOrgModalVisible(false);
+      setEditOrgData(null);
+      // Optionally refresh table/org modal if needed
+    } catch (error) {
+      setEditOrgError('Error updating organization');
+    } finally {
+      setEditOrgLoading(false);
+    }
+    <div className="info-section">
+      <h3>Organization Support</h3>
+      <div className="info-grid">
+        <div className="info-item">
+          <label>Full Name:</label>
+          <input name="organizationSupport.fullName" value={editOrgData.organizationSupport?.fullName || ''} onChange={handleEditOrgInputChange} />
+        </div>
+        <div className="info-item">
+          <label>Phone Number:</label>
+          <input name="organizationSupport.phoneNumber" value={editOrgData.organizationSupport?.phoneNumber || ''} onChange={handleEditOrgInputChange} />
+        </div>
+        <div className="info-item">
+          <label>Title:</label>
+          <input name="organizationSupport.title" value={editOrgData.organizationSupport?.title || ''} onChange={handleEditOrgInputChange} />
+        </div>
+      </div>
+    </div>
   };
 
   // Handle action button click
@@ -218,7 +342,14 @@ const ApprovalRequestsPage = () => {
                             >
                               Take Action
                             </button>
+                            <button
+                              className="btn btn-edit"
+                              onClick={() => handleEditOrgClick(request.organizationId)}
+                            >
+                              Edit Org
+                            </button>
                           </div>
+
                         </td>
                       </tr>
                     ))
@@ -346,6 +477,23 @@ const ApprovalRequestsPage = () => {
                 </div>
 
                 <div className="info-section">
+                  <h3>Organization Support</h3>
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <label>Full Name:</label>
+                      <span>{selectedOrg.organizationSupport?.fullName ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Phone Number:</label>
+                      <span>{selectedOrg.organizationSupport?.phoneNumber ?? '-'}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Title:</label>
+                      <span>{selectedOrg.organizationSupport?.title ?? '-'}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="info-section">
                   <h3>Documents</h3>
                   <div className="info-grid">
                     <div className="info-item">
@@ -451,6 +599,130 @@ const ApprovalRequestsPage = () => {
                     className="btn btn-primary"
                   >
                     Update Request
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Edit Organization Modal */}
+      {
+        editOrgModalVisible && editOrgData && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h2>Edit Organization</h2>
+                <button
+                  className="btn-close"
+                  onClick={() => setEditOrgModalVisible(false)}
+                >
+                  ×
+                </button>
+              </div>
+              <form onSubmit={handleEditOrgSubmit}>
+                <div className="modal-content">
+                  <div className="info-section">
+                    <h3>Basic Information</h3>
+                    <div className="info-grid">
+                      <div className="info-item">
+                        <label>Name:</label>
+                        <input name="name" value={editOrgData.name || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Email:</label>
+                        <input name="email" value={editOrgData.email || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Phone:</label>
+                        <input name="phoneNumber" value={editOrgData.phoneNumber || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Unified National Number:</label>
+                        <input name="unifiedNationalNumber" value={editOrgData.unifiedNationalNumber || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="info-section">
+                    <h3>Address</h3>
+                    <div className="info-grid">
+                      <div className="info-item">
+                        <label>Address:</label>
+                        <input name="address.address" value={editOrgData.address?.address || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>City:</label>
+                        <input name="address.city" value={editOrgData.address?.city || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>District:</label>
+                        <input name="address.district" value={editOrgData.address?.district || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Street:</label>
+                        <input name="address.street" value={editOrgData.address?.street || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Postal Code:</label>
+                        <input name="address.postalCode" value={editOrgData.address?.postalCode || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Sub Number:</label>
+                        <input name="address.subNumber" value={editOrgData.address?.subNumber || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Secondary Number:</label>
+                        <input name="address.secondaryNumber" value={editOrgData.address?.secondaryNumber || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="info-section">
+                    <h3>Tax Account</h3>
+                    <div className="info-grid">
+                      <div className="info-item">
+                        <label>Tax Number:</label>
+                        <input name="taxAccount.taxNumber" value={editOrgData.taxAccount?.taxNumber || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Expires At:</label>
+                        <input name="taxAccount.expiresAt" value={editOrgData.taxAccount?.expiresAt || ''} onChange={handleEditOrgInputChange} type="datetime-local" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="info-section">
+                    <h3>Organization Support</h3>
+                    <div className="info-grid">
+                      <div className="info-item">
+                        <label>Full Name:</label>
+                        <input name="organizationSupport.fullName" value={editOrgData.organizationSupport?.fullName || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Phone Number:</label>
+                        <input name="organizationSupport.phoneNumber" value={editOrgData.organizationSupport?.phoneNumber || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                      <div className="info-item">
+                        <label>Title:</label>
+                        <input name="organizationSupport.title" value={editOrgData.organizationSupport?.title || ''} onChange={handleEditOrgInputChange} />
+                      </div>
+                    </div>
+                  </div>
+                  {editOrgError && <div className="error-message">{editOrgError}</div>}
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setEditOrgModalVisible(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={editOrgLoading}
+                  >
+                    {editOrgLoading ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
               </form>
