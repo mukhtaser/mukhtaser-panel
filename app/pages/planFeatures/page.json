@@ -1,11 +1,99 @@
 {
-  "version": "1.0",
+  "version": "3.4",
   "type": "table",
-  "title": "plan_features",
+  "title": "تخصيص الباقات",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "plan_feature"
-  }
+    "table": "plan_feature",
+    "columns": [
+      {
+        "column": "id",
+        "hiddenInTable": true
+      },
+      {
+        "column": "monthly_limit",
+        "label": "الحد الشهرى",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "numberInput",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "created_at",
+        "label": "تاريخ الانشاء",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "updated_at",
+        "label": "تاريخ اخر تحديث",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "feature_id",
+        "label": "الخاصية",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "plan_id",
+        "label": "الخطة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      }
+    ]
+  },
+  "icon": "box"
 }

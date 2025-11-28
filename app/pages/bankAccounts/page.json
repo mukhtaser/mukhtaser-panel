@@ -1,11 +1,157 @@
 {
-  "version": "1.0",
+  "version": "3.4",
   "type": "table",
-  "title": "bank_accounts",
+  "title": "الحسابات البنكية",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "bank_account"
-  }
+    "table": "bank_account",
+    "columns": [
+      {
+        "column": "account_name",
+        "label": "رقم الحساب",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "bank_name",
+        "label": "اسم البنك",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "organization_name",
+        "label": "اسم المنشأة أو صاحب الحساب",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "ipan",
+        "label": "IBAN",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "swift_code",
+        "label": "سويفت كود",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "updated_at",
+        "hiddenInTable": true
+      },
+      {
+        "column": "created_at",
+        "hiddenInTable": true
+      },
+      {
+        "column": "organization_id",
+        "label": "الشركة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "users_id",
+        "label": "حساب الفرد",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "full_name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      }
+    ],
+    "views": [
+      {
+        "key": "view_Ql3lZt",
+        "filteringStrategy": "filter",
+        "label": "حسابات الأفراد",
+        "filterItems": [
+          {
+            "column": "users_id",
+            "operator": "isNotNull"
+          }
+        ]
+      },
+      {
+        "key": "view_sxUx4J",
+        "filteringStrategy": "filter",
+        "label": "حسابات الشركات",
+        "filterItems": [
+          {
+            "column": "organization_id",
+            "operator": "isNotNull"
+          }
+        ]
+      }
+    ]
+  },
+  "icon": "creditCard"
 }

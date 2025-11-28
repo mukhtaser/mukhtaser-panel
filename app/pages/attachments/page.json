@@ -1,11 +1,110 @@
 {
-  "version": "1.0",
+  "version": "3.4",
   "type": "table",
-  "title": "attachments",
+  "title": "مرفقات المنشآت",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "attachement"
-  }
+    "table": "attachement",
+    "columns": [
+      {
+        "column": "id",
+        "label": "ID",
+        "hiddenInTable": false,
+        "hiddenInForm": true,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "numberInput",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "type",
+        "label": "نوع المرفق",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "url",
+        "label": "رمز المرفق",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "created_at",
+        "label": "تاريخ رفع المرفق",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "updated_at",
+        "hiddenInTable": true
+      },
+      {
+        "column": "users_id",
+        "label": "حساب صاحب المرفق",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "full_name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      }
+    ],
+    "linkedRecordsColumns": [
+      {
+        "relationshipKey": "address__c__attachement_id",
+        "hiddenInTable": true
+      },
+      {
+        "relationshipKey": "tax_account__c__attachement_id",
+        "hiddenInTable": true
+      },
+      {
+        "relationshipKey": "unified_national_number__c__attachement_id",
+        "hiddenInTable": true
+      }
+    ]
+  },
+  "icon": "bookOpen"
 }

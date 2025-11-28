@@ -1,11 +1,145 @@
 {
-  "version": "1.0",
+  "version": "3.4",
   "type": "table",
-  "title": "approve_requests",
+  "title": "سجل طلبات الانضمام",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "approve_request"
-  }
+    "table": "approve_request",
+    "columns": [
+      {
+        "column": "id",
+        "label": "ID",
+        "hiddenInTable": false,
+        "hiddenInForm": true,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "numberInput",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "note",
+        "label": "ملاحظة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "status",
+        "label": "حالة الطلبات",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "created_at",
+        "label": "تاريخ انشاء الطلب",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "updated_at",
+        "label": "تاريخ اخر تحديث للطلب",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "organization_id",
+        "label": "الشركة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      }
+    ],
+    "views": [
+      {
+        "key": "view_4oZ78g",
+        "filteringStrategy": "filter",
+        "label": "الطلبات المقبولة",
+        "filterItems": [
+          {
+            "column": "status",
+            "operator": "equal",
+            "value": "ACCEPTED"
+          }
+        ]
+      },
+      {
+        "key": "view_LfnZLM",
+        "filteringStrategy": "filter",
+        "label": "الطلبات المرفوضة",
+        "filterItems": [
+          {
+            "column": "status",
+            "operator": "equal",
+            "value": "REJECTED"
+          }
+        ]
+      },
+      {
+        "key": "view_hXiJI3",
+        "filteringStrategy": "filter",
+        "label": "الطلبات المعلقة",
+        "filterItems": [
+          {
+            "column": "status",
+            "operator": "equal",
+            "value": "PENDING"
+          }
+        ]
+      }
+    ]
+  },
+  "icon": "table"
 }

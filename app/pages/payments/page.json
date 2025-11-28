@@ -1,11 +1,153 @@
 {
-  "version": "1.0",
+  "version": "3.4",
   "type": "table",
-  "title": "payments",
+  "title": "الفواتير و المدفوعات",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "payment"
-  }
+    "table": "payment",
+    "columns": [
+      {
+        "column": "id",
+        "label": "ID",
+        "hiddenInTable": false,
+        "hiddenInForm": true,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "numberInput",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "payment_details",
+        "label": "تفاصيل عملية الدفع",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": false,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "payment_method",
+        "label": "وسيلة الدفع",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "status",
+        "label": "حالة الفاتورة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "amount",
+        "label": "إجمالى المبلغ",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "created_at",
+        "label": "تاريخ إنشاء الفاتورة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "promocode_id",
+        "label": "كود الخصم المستخدم",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "subscription_id",
+        "label": "الاشتراك",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "updated_at",
+        "label": "تاريخ اخر تحديث للفاتورة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      }
+    ]
+  },
+  "icon": "creditCard"
 }

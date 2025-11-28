@@ -1,0 +1,33 @@
+{
+  "menuPageOrder": [
+    "users",
+    "orgs",
+    "features",
+    "planFeatures",
+    "plans",
+    "payments",
+    "subscriptions",
+    "addresses",
+    "attachments",
+    "taxAccounts",
+    "organizationSupports",
+    "mukhtaserCodes",
+    "customCodes",
+    "approveRequests",
+    "joinRequests",
+    "employees",
+    "socialAccounts",
+    "branches",
+    "notifications",
+    "bankAccounts",
+    "searchUsage",
+    "otps",
+    "approveFlow",
+    "homeImages",
+    "promocodes",
+    "advertisements",
+    "apiAccess",
+    "termsAndConditions",
+    "customCodeApprove"
+  ]
+}

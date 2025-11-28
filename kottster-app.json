@@ -1,40 +1,8 @@
 {
   "id": "a6298401-bd05-4594-b08a-6f6df2db9372",
   "meta": {
-    "name": "Admin Panel",
-    "icon": "https://web.kottster.app/icon.png"
-  },
-  "menuPageOrder": [
-    "users",
-    "organizations",
-    "features",
-    "planFeatures",
-    "plans",
-    "payments",
-    "subscriptions",
-    "addresses",
-    "attachments",
-    "attachments",
-    "taxAccounts",
-    "organizationSupports",
-    "mukhtaserCodes",
-    "approveRequests",
-    "joinRequests",
-    "employees",
-    "socialAccouts",
-    "branches",
-    "notifications",
-    "bankAccounts",
-    "searchUsages",
-    "otps",
-    "arroveFlows",
-    "homeImage",
-    "promocodes",
-    "advertisements",
-    "ads",
-    "apiAccess",
-    "termsAndConditions",
-    "customCodeApprove",
-    "customCode"
-  ]
+    "name": "لوحة تحكم مختصر",
+    "icon": "/assets/mukhtaser_logo.jpg",
+    "description": "لوحة تحكم مختصر لإدارة المنصة"
+  }
 }
