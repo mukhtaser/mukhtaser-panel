@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
   panel:
     build: .
@@ -11,5 +12,7 @@ services:
     restart: unless-stopped
     networks:
       - mukhtaser_mukhtaser_net
+
 networks:
   mukhtaser_mukhtaser_net:
+    external: true
