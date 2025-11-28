@@ -8,14 +8,14 @@ const ROOT_USER_PASSWORD = getEnvOrThrow('ROOT_USER_PASSWORD');
 const ROOT_USERNAME = getEnvOrThrow('ROOT_USERNAME');
 const API_TOKEN = getEnvOrThrow('API_TOKEN');
 
-/* 
+/*
  * For security, consider moving the secret data to environment variables.
  * See https://kottster.app/docs/deploying#before-you-deploy
  */
 export const app = createApp({
   schema,
-  secretKey: SECRET_KEY, 
-  kottsterApiToken: API_TOKEN , 
+  secretKey: SECRET_KEY,
+  kottsterApiToken: API_TOKEN,
 
   /*
    * The identity provider configuration.

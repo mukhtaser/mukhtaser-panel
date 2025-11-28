@@ -16,6 +16,7 @@
     "@kottster/react": "^3.x",
     "@kottster/server": "^3.x",
     "better-sqlite3": "^12.x",
+    "dotenv": "^17.2.3",
     "knex": "3.x",
     "lucide-react": "^0.553.0",
     "mysql2": "2.3.0",
