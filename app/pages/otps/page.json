@@ -1,8 +1,8 @@
 {
-  "version": "1.0",
+  "version": "3.4",
   "type": "table",
   "title": "otps",
-  "hideInSidebar": false,
+  "hideInSidebar": true,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",

@@ -1,12 +1,12 @@
 {
   "version": "3.4",
   "type": "table",
-  "title": "مسؤولى التواصل للمنشآت",
+  "title": "رموز مُـخْتَصِر المخصصة",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "organization_support",
+    "table": "custom_code",
     "columns": [
       {
         "column": "id",
@@ -16,66 +16,95 @@
         "filterable": true,
         "sortable": true,
         "searchable": false,
+        "position": 0,
+        "relationshipPreviewColumns": [],
         "fieldInput": {
           "type": "numberInput",
           "asArray": false
         },
         "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
+        "formFieldSpan": "12",
+        "id": "id"
       },
       {
-        "column": "full_name",
-        "label": "الاسم الكامل",
+        "column": "code",
+        "label": "رمز مُـخْتَصِر المخصص",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": false,
         "searchable": true,
+        "position": 1,
+        "relationshipPreviewColumns": [],
         "fieldInput": {
           "type": "textarea",
           "asArray": false
         },
         "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
+        "formFieldSpan": "12",
+        "id": "code"
       },
       {
-        "column": "title",
-        "label": "المنصب الوظيفى",
+        "column": "reason",
+        "label": "سبب اختيار المختصر",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": false,
         "searchable": true,
+        "position": 2,
+        "relationshipPreviewColumns": [],
         "fieldInput": {
           "type": "textarea",
           "asArray": false
         },
-        "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
+        "fieldRequirement": "none",
+        "formFieldSpan": "12",
+        "id": "reason"
       },
       {
-        "column": "phone_number",
-        "label": "رقم الهاتف",
+        "column": "other",
+        "label": "أسباب أخرى لاختيار الرمز",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": false,
         "searchable": true,
+        "position": 3,
+        "relationshipPreviewColumns": [],
         "fieldInput": {
           "type": "textarea",
           "asArray": false
         },
-        "fieldRequirement": "notEmpty",
+        "fieldRequirement": "none",
+        "formFieldSpan": "12",
+        "id": "other"
+      },
+      {
+        "column": "url",
+        "label": "رابط ملف اثبات الرمز",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "position": 4,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
         "formFieldSpan": "12"
       },
       {
         "column": "created_at",
-        "label": "تاريخ الانشاء",
+        "label": "تاريخ انشاء الرمز",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": true,
         "searchable": false,
+        "position": 5,
         "fieldInput": {
           "type": "dateTimePicker",
           "asArray": false
@@ -85,12 +114,13 @@
       },
       {
         "column": "updated_at",
-        "label": "تاريخ اخر تحديث",
+        "label": "تاريخ اخر تحديث للرمز",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": true,
         "searchable": false,
+        "position": 6,
         "fieldInput": {
           "type": "dateTimePicker",
           "asArray": false
@@ -100,12 +130,13 @@
       },
       {
         "column": "organization_id",
-        "label": "الشركة",
+        "label": "الشركة المرتبط بها",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": true,
         "searchable": false,
+        "position": 7,
         "relationshipPreviewColumns": [
           "name"
         ],
@@ -116,7 +147,20 @@
         "fieldRequirement": "notEmpty",
         "formFieldSpan": "12"
       }
+    ],
+    "calculatedColumns": [],
+    "linkedRecordsColumns": [
+      {
+        "relationshipKey": "code__c__custom_code_id",
+        "label": "تفاصيل الرمز",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "custom_code_approve__c__custom_code_id",
+        "label": "تفاصيل طلب الرمز",
+        "hiddenInTable": false
+      }
     ]
   },
-  "icon": "users"
+  "icon": "flag"
 }

@@ -1,8 +1,8 @@
 /* pages/approval-requests/styles.css */
 .approval-requests-container {
   padding: 20px;
-  max-width: 1200px;
   margin: 10px 10px 10px 290px;
+  direction: rtl;
 }
 
 .page-header {
@@ -19,10 +19,9 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  overflow-x: auto;     /* enable horizontal scroll */
-  overflow-y: hidden;   /* optional: hide vertical scroll */
-  white-space: nowrap;  /* prevent wrapping so scrolling happens */
-
+  overflow-x: auto; /* enable horizontal scroll */
+  overflow-y: hidden; /* optional: hide vertical scroll */
+  white-space: nowrap; /* prevent wrapping so scrolling happens */
 }
 
 .requests-table {
@@ -96,7 +95,8 @@
   color: #333;
 }
 
-.loading, .no-data {
+.loading,
+.no-data {
   padding: 40px;
   text-align: center;
   color: #666;

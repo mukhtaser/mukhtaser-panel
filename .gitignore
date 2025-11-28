@@ -5,3 +5,4 @@ npm-debug.log
 .cache
 *.env*
 dist
+pgdata

@@ -1,16 +1,16 @@
 {
   "version": "3.4",
   "type": "table",
-  "title": "الشروط  و الأحكام",
+  "title": "حسابات التواصل الاجتماعى",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "terms",
+    "table": "social_account",
     "columns": [
       {
-        "column": "title_ar",
-        "label": "العنوان بالعربية",
+        "column": "platform",
+        "label": "المنصة",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
@@ -24,83 +24,8 @@
         "formFieldSpan": "12"
       },
       {
-        "column": "title_en",
-        "label": "العنوان بالانجليزية",
-        "hiddenInTable": false,
-        "hiddenInForm": false,
-        "filterable": true,
-        "sortable": false,
-        "searchable": true,
-        "fieldInput": {
-          "type": "textarea",
-          "asArray": false
-        },
-        "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
-      },
-      {
-        "column": "title_ur",
-        "label": "العنوان بالآردية",
-        "hiddenInTable": false,
-        "hiddenInForm": false,
-        "filterable": true,
-        "sortable": false,
-        "searchable": true,
-        "fieldInput": {
-          "type": "textarea",
-          "asArray": false
-        },
-        "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
-      },
-      {
-        "column": "category",
-        "label": "التصنيف",
-        "hiddenInTable": false,
-        "hiddenInForm": false,
-        "filterable": true,
-        "sortable": false,
-        "searchable": true,
-        "fieldInput": {
-          "type": "textarea",
-          "asArray": false
-        },
-        "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
-      },
-      {
-        "column": "desc_ar",
-        "label": "الوصف بالعربية",
-        "hiddenInTable": false,
-        "hiddenInForm": false,
-        "filterable": true,
-        "sortable": false,
-        "searchable": true,
-        "fieldInput": {
-          "type": "textarea",
-          "asArray": false
-        },
-        "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
-      },
-      {
-        "column": "desc_en",
-        "label": "الوصف بالانجليزية",
-        "hiddenInTable": false,
-        "hiddenInForm": false,
-        "filterable": true,
-        "sortable": false,
-        "searchable": true,
-        "fieldInput": {
-          "type": "textarea",
-          "asArray": false
-        },
-        "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
-      },
-      {
-        "column": "desc_ur",
-        "label": "الوصف بالآردية",
+        "column": "url",
+        "label": "الرابط",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
@@ -115,13 +40,95 @@
       },
       {
         "column": "created_at",
-        "hiddenInTable": true
+        "label": "تاريخ الانشاء",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
       },
       {
         "column": "updated_at",
-        "hiddenInTable": true
+        "label": "تاريخ اخر تحديث",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "organization_id",
+        "label": "الشركة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "users_id",
+        "label": "الفرد",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "full_name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      }
+    ],
+    "views": [
+      {
+        "key": "view_MmI29X",
+        "filteringStrategy": "filter",
+        "label": "حسابات الأفراد",
+        "filterItems": [
+          {
+            "column": "users_id",
+            "operator": "isNotNull"
+          }
+        ]
+      },
+      {
+        "key": "view_3jAj2V",
+        "filteringStrategy": "filter",
+        "label": "حسابات المنشآت",
+        "filterItems": [
+          {
+            "column": "organization_id",
+            "operator": "isNotNull"
+          }
+        ]
       }
     ]
   },
-  "icon": "bookOpen"
+  "icon": "cloud"
 }

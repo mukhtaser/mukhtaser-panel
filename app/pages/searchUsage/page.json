@@ -1,61 +1,61 @@
 {
   "version": "3.4",
   "type": "table",
-  "title": "تحكم الوصول فى ال API",
+  "title": "استخدام البحث عن مُـخْتَصِر",
   "hideInSidebar": false,
   "config": {
     "dataSource": "postgres_db_342m2d",
     "fetchStrategy": "databaseTable",
-    "table": "api_access",
+    "table": "search_usage",
     "columns": [
       {
-        "column": "key",
-        "label": "API Key",
-        "hiddenInTable": false,
-        "hiddenInForm": false,
-        "filterable": true,
-        "sortable": false,
-        "searchable": true,
-        "fieldInput": {
-          "type": "textarea",
-          "asArray": false
-        },
-        "fieldRequirement": "notEmpty",
-        "formFieldSpan": "12"
-      },
-      {
-        "column": "isEnabled",
-        "label": "مفعل",
+        "column": "limit",
+        "label": "حد الاستخدام",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": true,
         "searchable": false,
         "fieldInput": {
-          "type": "checkbox",
+          "type": "numberInput",
           "asArray": false
         },
         "fieldRequirement": "notEmpty",
         "formFieldSpan": "12"
       },
       {
-        "column": "updated_at",
-        "hiddenInTable": true
+        "column": "usage",
+        "label": "عدد مرات الاستخدام",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "numberInput",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
       },
       {
         "column": "created_at",
         "hiddenInTable": true
       },
       {
-        "column": "organization_id",
-        "label": "الشركة",
+        "column": "updated_at",
+        "hiddenInTable": true
+      },
+      {
+        "column": "users_id",
+        "label": "حساب المستخدم",
         "hiddenInTable": false,
         "hiddenInForm": false,
         "filterable": true,
         "sortable": true,
         "searchable": false,
         "relationshipPreviewColumns": [
-          "name"
+          "full_name"
         ],
         "fieldInput": {
           "type": "recordSelect",
@@ -66,5 +66,5 @@
       }
     ]
   },
-  "icon": "sliders"
+  "icon": "barChart2"
 }

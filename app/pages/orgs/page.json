@@ -1,0 +1,335 @@
+{
+  "version": "3.4",
+  "type": "table",
+  "title": "المنشآت",
+  "hideInSidebar": false,
+  "config": {
+    "dataSource": "postgres_db_342m2d",
+    "fetchStrategy": "databaseTable",
+    "table": "organization",
+    "calculatedColumns": [
+      {
+        "label": "الباقة",
+        "alias": "main",
+        "sqlExpression": "SELECT name from plan p WHERE p.id = (SELECT plan_id\nFROM subscription s\nWHERE s.users.id = 9\nORDER BY updated_at DESC\nLIMIT 1)\n",
+        "position": 33
+      }
+    ],
+    "columns": [
+      {
+        "column": "name",
+        "label": "اسم الشركة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "email",
+        "label": "البريد الإلكترونى",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "code",
+        "label": "رمز مُـخْتَصِر",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "codeReason",
+        "label": "سبب اختيار المُـخْتَصِر المخصص",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "crn_url",
+        "label": "ال ID الخاص بالسجل التجارى",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "logo",
+        "label": "لوجو المنشأة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "national_address_url",
+        "label": "ال ID الخاص بالعنوان الوطنى",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "phone_number",
+        "label": "رقم الهاتف",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "unifiedNationalNumber",
+        "label": "الرقم الوطنى الموحد",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "vat_url",
+        "label": "رابط الملف الخاص بالبطاقة الضريبية",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": false,
+        "searchable": true,
+        "fieldInput": {
+          "type": "textarea",
+          "asArray": false
+        },
+        "fieldRequirement": "none",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "is_email_hidden",
+        "label": "البريد الإلكترونى ظاهر؟",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "checkbox",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "is_phone_number_hidden",
+        "label": "رقم الهاتف ظاهر؟",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "checkbox",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "created_at",
+        "label": "تاريخ الإنشاء",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "updated_at",
+        "label": "تاريخ اخر تحديث",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "fieldInput": {
+          "type": "dateTimePicker",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "meta",
+        "hiddenInTable": true
+      },
+      {
+        "column": "users_id",
+        "label": "حساب المستخدم المرتبط بالمنشأة",
+        "hiddenInTable": false,
+        "hiddenInForm": false,
+        "filterable": true,
+        "sortable": true,
+        "searchable": false,
+        "relationshipPreviewColumns": [
+          "full_name"
+        ],
+        "fieldInput": {
+          "type": "recordSelect",
+          "asArray": false
+        },
+        "fieldRequirement": "notEmpty",
+        "formFieldSpan": "12"
+      },
+      {
+        "column": "id",
+        "hiddenInTable": true
+      }
+    ],
+    "linkedRecordsColumns": [
+      {
+        "relationshipKey": "address__c__organization_id",
+        "label": "العنوان الوطنى",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "api_access__c__organization_id",
+        "label": "صلاحية استخدام ال API",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "approve_request__c__organization_id",
+        "label": "طلب الانضمام",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "bank_account__c__organization_id",
+        "label": "الحسابات البنكية",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "branch__c__organization_id",
+        "label": "عناوين الفروع",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "code__c__organization_id",
+        "label": "رموز مُـخْتَصِر",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "custom_code__c__organization_id",
+        "label": "رمز مُـخْتَصِر المخصص",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "join_request__c__organization_id",
+        "label": "طلبات الانضمام للشركة",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "employee_contract__c__organization_id",
+        "label": "موظفين الشركة",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "notification__c__organization_id",
+        "label": "إشعارات الشركة",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "org_attachement__c__organization_id",
+        "label": "مرفقات المنشأة",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "organization_support__c__organization_id",
+        "label": "مسؤول التواصل",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "social_account__c__organization_id",
+        "label": "حسابات التواصل الاجتماعى",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "tax_account__c__organization_id",
+        "label": "الحساب الضريبى",
+        "hiddenInTable": false
+      },
+      {
+        "relationshipKey": "unified_national_number__c__organization_id",
+        "label": "الرقم الوطنى الموحد",
+        "hiddenInTable": false
+      }
+    ]
+  },
+  "icon": "briefcase"
+}
