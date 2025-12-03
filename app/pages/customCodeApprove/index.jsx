@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css'; // We'll create this for basic styling
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000' //|| 'https://backend.mukhtaser.sa';
-const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000' //|| 'https://backend.mukhtaser.sa';
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend.mukhtaser.sa';
 
 const formatDate = (ts) => {
   try {
@@ -233,11 +232,11 @@ const ApprovalRequestsPage = () => {
                   <th>ID</th>
                   <th>اسم الشركة</th>
                   <th>الرمز المخصص المطلوب</th>
-                  <th>رابط ملف اثبات المُـخْتَصِر المخصص</th>
+                  <th>رابط ملف إثبات المُـخْتَصِر المخصص</th>
                   <th>السبب</th>
                   <th>حالة الطلب</th>
-                  <th>موافقة موظف الاعتماد او المراجع</th>
-                  <th>ملاحظات موظف الاعتماد او المراجع</th>
+                  <th>موافقة موظف الاعتماد أو المراجع</th>
+                  <th>ملاحظات موظف الاعتماد أو المراجع</th>
                   <th>موافقة مدخل البيانات</th>
                   <th>ملاحظات مدخل البيانات</th>
                 </tr>
@@ -306,7 +305,7 @@ const ApprovalRequestsPage = () => {
                             className="btn btn-action"
                             onClick={() => handleActionClick(request)}
                           >
-                            اتخذ اجراء
+                            اتخذ إجراء
                           </button>
                         </div>
                       </td>

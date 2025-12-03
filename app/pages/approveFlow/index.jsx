@@ -307,8 +307,10 @@ const ApprovalRequestsPage = () => {
                   <th>ID</th>
                   <th>Organization Name</th>
                   <th>Email</th>
-                  <th>Status</th>
-                  <th>Note</th>
+                  <th>LeaderApprove</th>
+                  <th>LeaderNote</th>
+                  <th>DataEntryApprove</th>
+                  <th>DataEntryNote</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -322,11 +324,42 @@ const ApprovalRequestsPage = () => {
                         <td>{request.id}</td>
                         <td>{request.organization?.name}</td>
                         <td>{request.organization?.email}</td>
-                        <td>
-                          <StatusBadge status={request.status} />
+
+                        <td className="note-cell">
+                          <span>
+                            {request.leaderApproved === true ? (
+                              <span className="text-green-600 font-semibold">
+                                مقبول
+                              </span>
+                            ) : request.leaderApproved === false ? (
+                              <span className="text-red-500 font-semibold">
+                                مرفوض
+                              </span>
+                            ) : (
+                              '--'
+                            )}
+                          </span>
                         </td>
                         <td className="note-cell">
-                          {request.note || '-'}
+                          {request.leaderReview || '-'}
+                        </td>
+                        <td className="note-cell">
+                          <span>
+                            {request.dataEntryApproved === true ? (
+                              <span className="text-green-600 font-semibold">
+                                مقبول{' '}
+                              </span>
+                            ) : request.dataEntryApproved === false ? (
+                              <span className="text-red-500 font-semibold">
+                                مرفوض{' '}
+                              </span>
+                            ) : (
+                              '--'
+                            )}
+                          </span>
+                        </td>
+                        <td className="note-cell">
+                          {request.dataEntryReview || '-'}
                         </td>
                         <td>
                           <div className="action-buttons">
