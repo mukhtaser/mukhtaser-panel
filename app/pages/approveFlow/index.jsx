@@ -28,8 +28,10 @@ const ApprovalRequestsPage = () => {
   const [actionModalVisible, setActionModalVisible] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [formData, setFormData] = useState({
-    status: '',
-    note: ''
+    leaderApproved: '',
+    leaderReview: '',
+    dataEntryApproved: '',
+    dataEntryReview: '',
   });
   // Edit Org modal state
   const [editOrgModalVisible, setEditOrgModalVisible] = useState(false);
@@ -99,29 +101,50 @@ const ApprovalRequestsPage = () => {
     }
   };
 
+
   // Update approval request status
   const updateApprovalRequest = async (e) => {
     e.preventDefault();
     if (!selectedRequest) return;
 
     try {
+      const payload = {
+        leaderApproved: formData.leaderApproved,
+        leaderReview: formData.leaderReview,
+        dataEntryApproved: formData.dataEntryApproved,
+        dataEntryReview: formData.leaderReview,
+      };
+      console.log(payload, 'payload')
+      const cleanedData = Object.fromEntries(
+        Object.entries(payload).filter(
+          ([_, v]) => v !== undefined && v !== null && v.length !== 0
+        )
+      );
+      console.log(cleanedData, 'cleanedData')
+
+
+
       const data = await apiCall(`${BACKEND_URL}/api/v1/approve-requests/${selectedRequest.id}`, {
         method: 'PUT',
-        body: JSON.stringify({
-          status: formData.status,
-          note: formData.note
-        })
-      });
+        body: JSON.stringify(cleanedData),
+      }
+      );
 
       alert('Request updated successfully');
       setActionModalVisible(false);
-      setFormData({ status: '', note: '' });
-      fetchApprovalRequests(pagination.page, pagagination.take);
-
+      setFormData({
+        leaderApproved: '',
+        leaderReview: '',
+        dataEntryApproved: '',
+        dataEntryReview: '',
+      });
+      fetchApprovalRequests(pagination.page, pagination.take);
     } catch (error) {
+      console.log(error);
       alert('Error updating request');
     }
   };
+
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -592,30 +615,62 @@ const ApprovalRequestsPage = () => {
               <form onSubmit={updateApprovalRequest}>
                 <div className="modal-content">
                   <div className="form-group">
-                    <label htmlFor="status">Status *</label>
+                    <label htmlFor="leaderApproved">مراجعة موظف الاعتماد</label>
                     <select
-                      id="status"
-                      name="status"
-                      value={formData.status}
+                      id="leaderApproved"
+                      name="leaderApproved"
+                      value={formData.leaderApproved}
                       onChange={handleInputChange}
                       required
                     >
-                      <option value="">Select status</option>
-                      <option value="PENDING">Pending</option>
-                      <option value="ACCEPTED">Accepted</option>
-                      <option value="REJECTED">Rejected</option>
+                      <option value="" disabled>
+                        يرجى اتخاذ قرار
+                      </option>
+                      <option value="true">قبول</option>
+                      <option value="false">رفض</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="note">Note</label>
+                    <label htmlFor="dataEntryApproved">
+                      مراجعة مدخل البيانات
+                    </label>
+                    <select
+                      id="dataEntryApproved"
+                      name="dataEntryApproved"
+                      value={formData.dataEntryApproved}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="" disabled>
+                        يرجى اتخاذ قرار
+                      </option>
+                      <option value="true">قبول</option>
+                      <option value="false">رفض</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="note">مراجعة موظف الاعتماد</label>
                     <textarea
                       id="note"
-                      name="note"
-                      value={formData.note}
+                      name="leaderReview"
+                      value={formData.leaderReview}
                       onChange={handleInputChange}
                       rows="4"
-                      placeholder="Add any notes or comments..."
+                      placeholder="أضف أي ملاحظات أو تعليقات..."
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="note">مراجعة مدخل البيانات</label>
+                    <textarea
+                      id="note"
+                      name="dataEntryReview"
+                      value={formData.dataEntryReview}
+                      onChange={handleInputChange}
+                      rows="4"
+                      placeholder="اضف أي ملاحظات أو تعليقات..."
                     />
                   </div>
                 </div>
@@ -625,13 +680,10 @@ const ApprovalRequestsPage = () => {
                     className="btn btn-secondary"
                     onClick={() => setActionModalVisible(false)}
                   >
-                    Cancel
+                    إلغاء
                   </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                  >
-                    Update Request
+                  <button type="submit" className="btn btn-primary">
+                    تحديث الطلب
                   </button>
                 </div>
               </form>
