@@ -128,7 +128,7 @@ export default function AdsManagementPage() {
   return (
     <div
       className="flex flex-col min-h-screen bg-gray-50"
-      style={{ marginLeft: "260px", paddingTop: "40px", width: "calc(100% - 260px)" }}
+      style={{ marginRight: "260px", paddingTop: "40px", width: "calc(100% - 260px)" }}
     >
       <div className="p-6 w-full">
         <div className="flex justify-between items-center mb-6">

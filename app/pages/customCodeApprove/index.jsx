@@ -217,7 +217,7 @@ const ApprovalRequestsPage = () => {
   };
 
   return (
-    <div className="approval-requests-container" width="100%">
+    <div className="custom-code-approval-requests-container" width="100%">
       <div className="page-header">
         <h1>طلبات المختصر المخصص</h1>
       </div>

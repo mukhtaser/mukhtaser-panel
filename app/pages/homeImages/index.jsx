@@ -89,7 +89,7 @@ export default function HomeImageUploader() {
   return (
     <div
       className="flex justify-center items-start min-h-screen bg-gray-50"
-      style={{ paddingLeft: "260px", paddingTop: "40px" }}
+      style={{marginLeft:"20px",marginRight:"25px", paddingRight: "260px", paddingTop: "40px" }}
     >
       <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">
