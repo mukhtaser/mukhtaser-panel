@@ -4,7 +4,7 @@
   "title": "استخدام البحث عن مُـخْتَصِر",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "search_usage",
     "columns": [
@@ -66,5 +66,9 @@
       }
     ]
   },
-  "icon": "barChart2"
+  "icon": "barChart2",
+  "allowedRoles": [
+    "مشرف",
+    "Super Admin"
+  ]
 }

@@ -4,17 +4,10 @@
   "title": "المنشآت",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "organization",
-    "calculatedColumns": [
-      {
-        "label": "الباقة",
-        "alias": "main",
-        "sqlExpression": "SELECT name from plan p WHERE p.id = (SELECT plan_id\nFROM subscription s\nWHERE s.users.id = 9\nORDER BY updated_at DESC\nLIMIT 1)\n",
-        "position": 33
-      }
-    ],
+    "calculatedColumns": [],
     "columns": [
       {
         "column": "name",
@@ -329,7 +322,12 @@
         "label": "الرقم الوطنى الموحد",
         "hiddenInTable": false
       }
-    ]
+    ],
+    "views": []
   },
-  "icon": "briefcase"
+  "icon": "briefcase",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

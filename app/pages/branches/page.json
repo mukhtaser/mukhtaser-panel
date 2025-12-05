@@ -4,7 +4,7 @@
   "title": "عناوين الفروع",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "branch",
     "columns": [
@@ -95,5 +95,9 @@
       }
     ]
   },
-  "icon": "mapPin"
+  "icon": "mapPin",
+  "allowedRoles": [
+    "مشرف",
+    "Super Admin"
+  ]
 }

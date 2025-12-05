@@ -2,11 +2,11 @@ import { createApp, createIdentityProvider } from '@kottster/server';
 import schema from '../../kottster-app.json';
 import { getEnvOrThrow } from '@kottster/common';
 
-const SECRET_KEY = getEnvOrThrow('SECRET_KEY');
-const JWT_SECRET_SALT = getEnvOrThrow('JWT_SECRET_SALT');
-const ROOT_USER_PASSWORD = getEnvOrThrow('ROOT_USER_PASSWORD');
-const ROOT_USERNAME = getEnvOrThrow('ROOT_USERNAME');
-const API_TOKEN = getEnvOrThrow('API_TOKEN');
+const SECRET_KEY = process.env.SECRET_KEY;
+const JWT_SECRET_SALT = process.env.JWT_SECRET_SALT;
+const ROOT_USER_PASSWORD = process.env.ROOT_USER_PASSWORD;
+const ROOT_USERNAME = process.env.ROOT_USERNAME;
+const API_TOKEN = process.env.API_TOKEN;
 
 /*
  * For security, consider moving the secret data to environment variables.

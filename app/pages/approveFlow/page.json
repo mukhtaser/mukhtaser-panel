@@ -3,5 +3,11 @@
   "type": "custom",
   "title": "مراجعة طلبات الانضمام",
   "hideInSidebar": false,
-  "icon": "archive"
+  "icon": "archive",
+  "allowedRoles": [
+    "Super Admin",
+    "مراجع - قائد فريق",
+    "مشرف",
+    "مدخل بيانات"
+  ]
 }

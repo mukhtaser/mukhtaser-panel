@@ -4,7 +4,7 @@
   "title": "الإشعارات",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "notification",
     "columns": [
@@ -168,5 +168,10 @@
       }
     ]
   },
-  "icon": "messageSquare"
+  "icon": "messageSquare",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف",
+    "موظف تسويق"
+  ]
 }

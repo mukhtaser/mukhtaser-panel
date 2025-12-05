@@ -4,7 +4,7 @@
   "title": "تخصيص الباقات",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "plan_feature",
     "columns": [
@@ -95,5 +95,8 @@
       }
     ]
   },
-  "icon": "box"
+  "icon": "box",
+  "allowedRoles": [
+    "Super Admin"
+  ]
 }

@@ -4,7 +4,7 @@
   "title": "موظفين المنشآت",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "employee_contract",
     "columns": [
@@ -99,5 +99,9 @@
       }
     ]
   },
-  "icon": "users"
+  "icon": "users",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

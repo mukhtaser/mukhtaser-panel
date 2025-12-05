@@ -1,0 +1,47 @@
+{
+  "version": "3.4",
+  "type": "dashboard",
+  "icon": "pieChart",
+  "title": "بعض الاحصائيات",
+  "hideInSidebar": false,
+  "config": {
+    "withDateRangePicker": true,
+    "stats": [
+      {
+        "key": "stat_9yzp83",
+        "fetchStrategy": "rawSqlQuery",
+        "type": "single",
+        "dataSource": "postgres_db_jai0wd",
+        "title": "إجمالى عدد المستخدمين",
+        "sqlQuery": "SELECT COUNT(*) FROM users",
+        "id": "stat_9yzp83",
+        "span": "4"
+      },
+      {
+        "key": "stat_ph5uqa",
+        "fetchStrategy": "rawSqlQuery",
+        "type": "ratio",
+        "dataSource": "postgres_db_jai0wd",
+        "title": "عدد حسابات الأفراد",
+        "sqlQuery": "SELECT COUNT(*) FROM users WHERE buz_acc = false",
+        "id": "stat_ph5uqa",
+        "sqlTotalQuery": "SELECT COUNT(*) FROM users",
+        "span": "4"
+      },
+      {
+        "key": "stat_3zrvru",
+        "fetchStrategy": "rawSqlQuery",
+        "type": "ratio",
+        "dataSource": "postgres_db_jai0wd",
+        "title": "عدد حسابات الشركات",
+        "sqlQuery": "SELECT COUNT(*) FROM users WHERE buz_acc = true\n",
+        "sqlTotalQuery": "SELECT COUNT(*) FROM users",
+        "span": "4"
+      }
+    ],
+    "cards": []
+  },
+  "allowedRoles": [
+    "Super Admin"
+  ]
+}

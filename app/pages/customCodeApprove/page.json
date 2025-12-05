@@ -3,5 +3,11 @@
   "type": "custom",
   "title": "الموافقة على طلبات رمز المُـخْتَصِر المخصص",
   "hideInSidebar": false,
-  "icon": "sliders"
+  "icon": "sliders",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف",
+    "مراجع - قائد فريق",
+    "مدخل بيانات"
+  ]
 }

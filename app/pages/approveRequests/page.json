@@ -4,7 +4,7 @@
   "title": "سجل طلبات الانضمام",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "approve_request",
     "columns": [
@@ -141,5 +141,9 @@
       }
     ]
   },
-  "icon": "table"
+  "icon": "table",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

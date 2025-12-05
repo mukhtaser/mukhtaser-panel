@@ -4,7 +4,7 @@
   "title": "حسابات التواصل الاجتماعى",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "social_account",
     "columns": [
@@ -130,5 +130,9 @@
       }
     ]
   },
-  "icon": "cloud"
+  "icon": "cloud",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

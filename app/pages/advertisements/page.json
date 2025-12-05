@@ -3,5 +3,10 @@
   "type": "custom",
   "title": "الإعلانات",
   "hideInSidebar": false,
-  "icon": "image"
+  "icon": "image",
+  "allowedRoles": [
+    "موظف تسويق",
+    "مشرف",
+    "Super Admin"
+  ]
 }

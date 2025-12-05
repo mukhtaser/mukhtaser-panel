@@ -4,7 +4,7 @@
   "title": "طلبات انضمام الافراد للشركات",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "join_request",
     "columns": [
@@ -91,5 +91,9 @@
       }
     ]
   },
-  "icon": "mail"
+  "icon": "mail",
+  "allowedRoles": [
+    "مشرف",
+    "Super Admin"
+  ]
 }

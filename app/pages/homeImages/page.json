@@ -3,5 +3,9 @@
   "type": "custom",
   "title": "صورة صفحة تسجيل الدخول",
   "hideInSidebar": false,
-  "icon": "image"
+  "icon": "image",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

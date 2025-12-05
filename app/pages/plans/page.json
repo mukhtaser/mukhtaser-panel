@@ -4,7 +4,7 @@
   "title": "الباقات المتاحة",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "plan",
     "columns": [
@@ -120,5 +120,8 @@
       }
     ]
   },
-  "icon": "award"
+  "icon": "award",
+  "allowedRoles": [
+    "Super Admin"
+  ]
 }

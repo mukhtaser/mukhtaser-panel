@@ -4,7 +4,7 @@
   "title": "الحسابات الضريبية للمنشآت",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "tax_account",
     "columns": [
@@ -119,5 +119,9 @@
       }
     ]
   },
-  "icon": "barChart2"
+  "icon": "barChart2",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

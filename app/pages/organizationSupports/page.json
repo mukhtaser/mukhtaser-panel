@@ -4,7 +4,7 @@
   "title": "مسؤولى التواصل للمنشآت",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "organization_support",
     "columns": [
@@ -118,5 +118,9 @@
       }
     ]
   },
-  "icon": "users"
+  "icon": "users",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

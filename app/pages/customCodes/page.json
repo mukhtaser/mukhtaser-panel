@@ -4,7 +4,7 @@
   "title": "رموز مُـخْتَصِر المخصصة",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "custom_code",
     "columns": [
@@ -162,5 +162,9 @@
       }
     ]
   },
-  "icon": "flag"
+  "icon": "flag",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }

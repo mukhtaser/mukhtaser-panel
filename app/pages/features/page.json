@@ -4,7 +4,7 @@
   "title": "خصائص الباقات",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "feature",
     "columns": [
@@ -85,5 +85,8 @@
       }
     ]
   },
-  "icon": "shoppingBag"
+  "icon": "shoppingBag",
+  "allowedRoles": [
+    "Super Admin"
+  ]
 }

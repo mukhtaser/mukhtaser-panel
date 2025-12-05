@@ -4,7 +4,7 @@
   "title": "جميع رموز مُـخْتَصِر",
   "hideInSidebar": false,
   "config": {
-    "dataSource": "postgres_db_342m2d",
+    "dataSource": "postgres_db_jai0wd",
     "fetchStrategy": "databaseTable",
     "table": "code",
     "columns": [
@@ -176,5 +176,9 @@
       }
     ]
   },
-  "icon": "flag"
+  "icon": "flag",
+  "allowedRoles": [
+    "Super Admin",
+    "مشرف"
+  ]
 }
